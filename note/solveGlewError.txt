@@ -1,0 +1,5 @@
+glewinit() error:
+1. can not find glewInit glewExperimental and so on 
+solve: use the glew32s.lib 32bit version! (this is the vs linker version compatible issu)
+2 can not find gl version
+solve: I know this answer comes a bit late, but I don't see you making the OpenGL context current by calling glfwMakeContextCurrent(window). You have to do that before calling glewInit()

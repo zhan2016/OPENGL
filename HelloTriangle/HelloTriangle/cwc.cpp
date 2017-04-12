@@ -31,17 +31,17 @@ int glShaderManager::loadshader(char* filename, GLchar** ShaderSource)
 
 	// len isn't always strlen cause some characters are stripped in ascii read...
 	// it is important to 0-terminate the real length later, len is just max possible value... 
-	*ShaderSource[*len] = 0;
+	(*ShaderSource)[*len] = '\0';
 
 	unsigned int i = 0;
 	while (file.good())
 	{
-		*ShaderSource[i] = file.get();       // get character from file.
+		(*ShaderSource)[i] = file.get();       // get character from file.
 		if (!file.eof())
 			i++;
 	}
 
-	*ShaderSource[i] = 0;  // 0-terminate it at the correct position
+	(*ShaderSource)[i] = 0;  // 0-terminate it at the correct position
 
 	file.close();
 
@@ -91,8 +91,9 @@ GLuint* glShaderManager::loadfromFile(char* filename1, char* filename2)
 		 return 0;
 	 }
 
-	 GLuint *shaderProgram = NULL;
+	 GLuint *shaderProgram = new GLuint();
 	 *shaderProgram = glCreateProgram();
+	
 
 
 	 GLuint vertexShader, fragmentShader;
@@ -126,7 +127,17 @@ GLuint* glShaderManager::loadfromFile(char* filename1, char* filename2)
 
 	 glAttachShader(*shaderProgram, vertexShader);
 	 glAttachShader(*shaderProgram, fragmentShader);
-		
+
+	 glLinkProgram(*shaderProgram); //all shader has been attached to this shaderprogram.link it!
+	 glGetProgramiv(*shaderProgram, GL_LINK_STATUS, &success);
+	 if (!success) {
+		 glGetProgramInfoLog(*shaderProgram, 512, NULL, infoLog);
+	 }
+
+	 //release the vertexshader and fragmentshader
+	 glDeleteShader(vertexShader);
+	 glDeleteShader(fragmentShader);
+
 	 return shaderProgram;
 
 }
